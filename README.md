@@ -34,7 +34,7 @@ A simple Snake game written in Python using the `curses` library. It supports bo
     ```
 3. Run the game:
     ```bash
-    python snake_game_language_support.py
+    python snake.py
     ```
 
 ---
