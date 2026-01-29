@@ -15,6 +15,8 @@ A simple Snake game written in Python using the `curses` library. It supports bo
 - Dynamic food generation
 - Smooth gameplay
 - Real-time score updates
+- High score persistence (saved locally)
+- Pause and resume functionality
 
 ## Prerequisites
 1. Python 3.10 or higher is recommended (for `match`-case syntax support)
