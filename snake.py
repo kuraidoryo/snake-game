@@ -60,9 +60,38 @@ def main(stdscr):
         stdscr.getch()
         main_menu(lang)
 
+    def pause_menu(lang):
+        max_y, max_x = stdscr.getmaxyx()
+        
+        stdscr.clear()
+        if lang == "en":
+            stdscr.addstr(int(max_y / 2) - 1, int(max_x / 2) - len("Game Paused") // 2, "Game Paused")
+            stdscr.addstr(int(max_y / 2), int(max_x / 2) - len("Press 'r' to Resume") // 2, "Press 'r' to Resume")
+            stdscr.addstr(int(max_y / 2) + 1, int(max_x / 2) - len("Press 'q' to Quit to Main Menu") // 2, "Press 'q' to Quit to Main Menu")
+        else:
+            stdscr.addstr(int(max_y / 2) - 1, int(max_x / 2) - len("Gra wstrzymana") // 2, "Gra wstrzymana")
+            stdscr.addstr(int(max_y / 2), int(max_x / 2) - len("Naciśnij 'r' aby wznowić") // 2, "Naciśnij 'r' aby wznowić")
+            stdscr.addstr(int(max_y / 2) + 1, int(max_x / 2) - len("Naciśnij 'q' aby wrócić do menu głównego") // 2, "Naciśnij 'q' aby wrócić do menu głównego")
+
+        stdscr.refresh()
+
+        while True:
+            key = stdscr.getch()
+            if key == ord('r'):
+                stdscr.nodelay(True)
+                return
+            elif key == ord('q'):
+                main_menu(lang)
+                return
+
     def main_game(lang):
         direction = "East"
         points = 0
+        try:
+            with open("highscore.txt", "r") as f:
+                highscore = int(f.read())
+        except:
+            highscore = 0
         y, x = 10, 10
         max_y, max_x = stdscr.getmaxyx()
         food_x, food_y = random.randint(1, max_x - 2), random.randint(1, max_y - 2)
@@ -83,6 +112,8 @@ def main(stdscr):
                 direction = "West"
             elif key == ord('d') and direction != "West":
                 direction = "East"
+            elif key == ord('p'):
+                pause_menu(lang)
             elif key == ord('q'):
                 break
             
@@ -105,6 +136,8 @@ def main(stdscr):
 
             if (food_y, food_x) == new_head:
                 points += 1
+                if points > highscore:
+                    highscore = points
                 snake_length += 1
                 food_x, food_y = random.randint(1, max_x - 2), random.randint(1, max_y - 2)
             else:
@@ -112,13 +145,16 @@ def main(stdscr):
 
             stdscr.clear()
             if lang == "en":
-                stdscr.addstr(0, 0, f'Points: {points}')
+                stdscr.addstr(0, 0, f'Points: {points} Highscore: {highscore}')
             else:
-                stdscr.addstr(0, 0, f'Punkty: {points}')
+                stdscr.addstr(0, 0, f'Punkty: {points} Rekord: {highscore}')
             stdscr.addstr(food_y, food_x, '$')
             for seg in snake:
                 stdscr.addstr(seg[0], seg[1], '#')
             stdscr.refresh()
+
+        with open("highscore.txt", "w") as f:
+            f.write(str(highscore))
 
     main_menu()
     
